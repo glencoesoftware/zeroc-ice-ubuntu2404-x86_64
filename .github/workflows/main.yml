@@ -18,9 +18,9 @@ jobs:
           docker build -t builder .
       - name: Run
         run: |
-          patch -p1 -d ice < *.patch
+          for p in *.patch; do patch -p1 -d ice < ${p}; done
           mkdir dist
-          docker run --rm -e CPPFLAGS='-Wno-error=deprecated-declarations -Wno-error=unused-result -Wno-error=register' -v $PWD/dist:/opt -v $PWD/ice:/build builder /bin/bash -c "cd /build/cpp ; make install"
+          docker run --rm -e CPPFLAGS='-Wno-error=deprecated-declarations -Wno-error=unused-result -Wno-error=register -Wno-error=use-after-free' -v $PWD/dist:/opt -v $PWD/ice:/build builder /bin/bash -c "cd /build/cpp ; make install"
           cd dist
           tar zcf Ice-3.6.5-ubuntu2404-x86_64.tar.gz Ice-3.6.5
       - name: Upload artifacts
